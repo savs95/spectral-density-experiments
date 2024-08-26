@@ -84,7 +84,9 @@ def get_GQ_distr(a,b,norm2=1):
         theta,S = sp.linalg.eigh_tridiagonal(a,b,lapack_driver='stemr')
     except:
         #add noise here if it fails to converge
-        theta,S = sp.linalg.eigh_tridiagonal(a,b,lapack_driver='stemr')
+        noise_a = np.random.normal(loc=0, scale=1e-8, size=a.shape)
+        noise_b = np.random.normal(loc=0, scale=1e-8, size=b.shape)
+        theta,S = sp.linalg.eigh_tridiagonal(a+noise_a, b+noise_b, lapack_driver='stemr', tol=1e-6)
 
     GQ = Distribution()
     GQ.from_weights(theta,S[0]**2*norm2)
